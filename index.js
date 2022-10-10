@@ -19,6 +19,7 @@ async function load(wasmPath) {
     let pos = 0;
     for (let chunk of chunks) {
         wasmBytes.set(chunk, pos);
+        pos += chunk.byteLength;
     }
 
     await init(wasmBytes);
