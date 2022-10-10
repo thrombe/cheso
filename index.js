@@ -1,4 +1,4 @@
-import init from "/runner.js"
+import init from "./runner.js"
 
 async function load(wasmPath) {
     const response = await fetch(wasmPath);
