@@ -52,14 +52,14 @@ git push
 [tasks.web-build]
 script_runner = "@shell"
 script = '''
-wasm-pack build --target web --out-dir target/pkg --mode no-install ${MODE}
+wasm-pack build --target web --out-dir target/pkg --mode no-install ${MODE} ${@}
 '''
 
 
 [tasks.run]
 script_runner = "@shell"
 script = '''
-cargo run --release
+cargo run --release ${@}
 '''
 
 
