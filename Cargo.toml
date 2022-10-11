@@ -18,6 +18,7 @@ anyhow = "1.0"
 bevy = "0.8"
 console_error_panic_hook = "0.1"
 wasm-bindgen = "0.2"
+bevy_rapier2d = "0.17"
 
 
 [workspace]
@@ -43,3 +44,8 @@ wasm-opt = false
 
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = false
+
+
+[[example]]
+name = "bouncy"
+

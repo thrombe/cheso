@@ -1,0 +1,54 @@
+
+
+https://herluf-ba.github.io/making-a-turn-based-multiplayer-game-in-rust-01-whats-a-turn-based-game-anyway.html
+https://github.com/Red-Teapot/CombinerClicker
+https://github.com/codec-abc/Yew-WebRTC-Chat
+
+https://webrtchacks.com/datachannel-multiplayer-game/
+https://medium.com/bumble-tech/webrtc-making-a-peer-to-peer-game-using-javascript-f7123aed769e
+https://fireship.io/lessons/webrtc-firebase-video-chat/
+https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
+https://webrtc.org/
+https://webrtcforthecurious.com/
+
+
+
+webrtc
+  . https://webrtcforthecurious.com/docs/01-what-why-and-how/
+  . https://github.com/webrtc-rs/webrtc
+  . https://github.com/webrtc-rs/examples/blob/main/examples/README.md
+  . https://charles-schleich.medium.com/webrtc-video-chat-tutorial-using-rust-wasm-fa340f7aeef9
+  . https://github.com/codec-abc/Yew-WebRTC-Chat
+  . https://medium.com/leaningtech/porting-a-c-multiplayer-game-to-the-web-with-cheerp-webrtc-and-firebase-29fbbc62c5ca
+
+libp2p
+  . https://github.com/libp2p/rust-libp2p
+  . libp2p holepunching mechanism -> https://blog.ipfs.tech/2022-01-20-libp2p-hole-punching/
+  . https://docs.rs/libp2p/0.48.0/libp2p/tutorials/index.html
+  . https://github.com/libp2p/rust-libp2p/tree/master/examples
+  . p2p app local network -> https://blog.logrocket.com/libp2p-tutorial-build-a-peer-to-peer-app-in-rust/
+  . https://docs.libp2p.io/
+
+bevy/wasm examples:
+  . https://rustwasm.github.io/wasm-bindgen/examples/raytrace.html
+  . https://github.com/bevyengine/bevy/tree/latest/examples#examples
+  . https://bevyengine.org/examples/
+  . https://dev.to/sbelzile/making-games-in-rust-part-13-monster-ai-2dfn
+
+task runners:
+  . https://github.com/matklad/cargo-xtask
+  . https://github.com/matklad/xshell
+  . https://github.com/casey/just
+  . https://github.com/sagiegurari/cargo-make
+  . https://github.com/fornwall/rust-script
+
+other resources:
+  . https://bevyengine.org/learn/book/getting-started/
+  . https://bevyengine.org/learn/book/next-steps/
+  . https://github.com/gschup/ggrs
+  . https://rapier.rs/docs/user_guides/bevy_plugin/getting_started_bevy
+
+awesome things in bevy:
+  . [shadertoy wgsl bevy](https://github.com/eliotbo/bevy_shadertoy_wgsl)
+  . [p2p game](https://johanhelsing.studio/posts/extreme-bevy)
+  . [real time path tracing bevy](https://github.com/cryscan/bevy-hikari)
