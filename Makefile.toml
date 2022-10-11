@@ -75,6 +75,11 @@ env = { MODE = "--profiling" }
 run_task = [ { name = [ "web-prep", "example", "server-run" ] } ]
 
 
+[tasks.web-run-release]
+env = { MODE = "--release" }
+run_task = [ { name = [ "web-prep", "example", "web-opt", "server-run" ] } ]
+
+
 [tasks.server-run]
 script_runner = "@shell"
 script = '''
@@ -88,7 +93,7 @@ script = '''
 dir="web/runner.wasm"
 opt="$(fd -t f wasm-opt ~/.cache/.wasm-pack | head -n 1)"
 if [[ $opt == *"/wasm-opt" ]]; then
-    echo "Optimizing wasm binary with `wasm-opt`..."
+    echo "Optimizing wasm binary with wasm-opt ..."
     # echo "${opt} -O ${dir} -o ${dir}.tmp"
     $opt -O $dir -o "${dir}.tmp"
     cp "${dir}.tmp" $dir
