@@ -1,0 +1,77 @@
+
+[env]
+PROJECT_NAME = "cheso"
+REPO_NAME = "cheso"
+GIT_USER = "thrombe"
+GIT_PAGES_BRANCH = "web"
+
+
+
+[tasks.web-prep]
+dependencies = [ "web-build" ]
+script_runner = "@shell"
+script = '''
+mkdir -p web/assets
+
+if [[ ! -d web ]]; then
+    cd web
+    git clone https://github.com/${GIT_USER}/${REPO_NAME}
+    git checkout ${GIT_PAGES_BRANCH}
+    cd ..
+else
+    cd web
+    git checkout ${GIT_PAGES_BRANCH}
+    cd ..
+fi
+
+cp web_src/index.html web/.
+cp web_src/index.js web/.
+cp target/pkg/${PROJECT_NAME}_bg.wasm web/runner.wasm
+cp target/pkg/${PROJECT_NAME}.js web/runner.js
+mkdir -p assets
+rsync -av --progress "./assets/" ./web/assets/. --delete
+'''
+
+
+[tasks.web-push]
+env = { MODE = "--release" }
+dependencies = [ "web-prep" ]
+script_runner = "@shell"
+script = '''
+cd web
+git add -A
+
+# git commit --amend --no-edit
+# git push --force
+
+git commit -m "update wasm"
+git push
+'''
+
+
+[tasks.web-build]
+script_runner = "@shell"
+script = '''
+wasm-pack build --target web --out-dir target/pkg --mode no-install ${MODE}
+'''
+
+
+[tasks.run]
+script_runner = "@shell"
+script = '''
+cargo run --release
+'''
+
+
+[tasks.web-run]
+env = { MODE = "--profiling" }
+run_task = [ { name = [ "web-prep", "server-run" ] } ]
+
+
+[tasks.server-run]
+script_runner = "@shell"
+script = '''
+cd server
+cargo run --release -- ../web
+'''
+

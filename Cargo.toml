@@ -1,0 +1,45 @@
+[package]
+name = "cheso"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib"]
+path = "src/main.rs"
+
+[[bin]]
+name = "cheso-desktop"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0"
+bevy = "0.8"
+console_error_panic_hook = "0.1"
+wasm-bindgen = "0.2"
+
+
+[workspace]
+resolver = "2" # Important! wgpu/Bevy needs this!
+exclude = [ "server" ]
+
+# Enable a small amount of optimization in debug mode
+[profile.dev]
+opt-level = 1
+
+# Enable high optimizations for dependencies (incl. Bevy), but not for our code:
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+incremental = true
+
+[package.metadata.wasm-pack.profile.dev]
+wasm-opt = false
+
+[package.metadata.wasm-pack.profile.profiling]
+wasm-opt = false
+
+# [package.metadata.wasm-pack.profile.release]
+# wasm-opt = false
