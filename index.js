@@ -1,3 +1,5 @@
+document.addEventListener('contextmenu', event => event.preventDefault());
+
 import init from "./runner.js"
 
 async function load(wasmPath) {
@@ -24,7 +26,5 @@ async function load(wasmPath) {
 
     await init(wasmBytes);
 }
-
-document.addEventListener('contextmenu', event => event.preventDefault());
 
 load('/runner.wasm');
