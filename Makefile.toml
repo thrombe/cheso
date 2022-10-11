@@ -20,7 +20,9 @@ if [[ ! -d web ]]; then
     cd ..
 else
     cd web
-    git checkout ${GIT_PAGES_BRANCH}
+    if [[ "$(git rev-parse --abbrev-ref HEAD)" != "${GIT_PAGES_BRANCH} ]]; then
+        exit 51
+    fi
     cd ..
 fi
 
@@ -39,6 +41,9 @@ dependencies = [ "web-prep" ]
 script_runner = "@shell"
 script = '''
 cd web
+if [[ "$(git rev-parse --abbrev-ref HEAD)" != "${GIT_PAGES_BRANCH}" ]]; then
+    exit 52
+fi
 git add -A
 
 # git commit --amend --no-edit
@@ -52,7 +57,7 @@ git push
 [tasks.web-build]
 script_runner = "@shell"
 script = '''
-wasm-pack build --target web --out-dir target/pkg --mode no-install ${MODE} ${@}
+wasm-pack build --target web --out-dir target/pkg --mode no-install --no-typescript ${MODE} ${@}
 '''
 
 
