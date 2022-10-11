@@ -20,7 +20,7 @@ if [[ ! -d web ]]; then
     cd ..
 else
     cd web
-    if [[ "$(git rev-parse --abbrev-ref HEAD)" != "${GIT_PAGES_BRANCH} ]]; then
+    if [[ "$(git rev-parse --abbrev-ref HEAD)" != "${GIT_PAGES_BRANCH}" ]]; then
         exit 51
     fi
     cd ..
@@ -37,7 +37,9 @@ rsync -av --progress "./assets/" ./web/assets/. --delete
 
 [tasks.web-push]
 env = { MODE = "--release" }
-dependencies = [ "web-prep" ]
+run_task = [{ name = ["web-prep", "example", "web-opt", "push"] } ]
+
+[tasks.push]
 script_runner = "@shell"
 script = '''
 cd web
@@ -70,7 +72,7 @@ cargo run --release ${@}
 
 [tasks.web-run]
 env = { MODE = "--profiling" }
-run_task = [ { name = [ "web-prep", "server-run" ] } ]
+run_task = [ { name = [ "web-prep", "example", "server-run" ] } ]
 
 
 [tasks.server-run]
@@ -80,3 +82,69 @@ cd server
 cargo run --release -- ../web
 '''
 
+[tasks.web-opt]
+script_runner = "@shell"
+script = '''
+dir="web/runner.wasm"
+opt="$(fd -t f wasm-opt ~/.cache/.wasm-pack | head -n 1)"
+if [[ $opt == *"/wasm-opt" ]]; then
+    echo "Optimizing wasm binary with `wasm-opt`..."
+    # echo "${opt} -O ${dir} -o ${dir}.tmp"
+    $opt -O $dir -o "${dir}.tmp"
+    cp "${dir}.tmp" $dir
+fi
+
+'''
+
+[tasks.example]
+script_runner = "@shell"
+script = '''
+found="no"
+needed_item="idk"
+for item in ${@}
+do
+    echo $item
+    if [[ $found == "yes" ]]; then
+        needed_item=$item
+        break
+    elif [[ $item == "--example" ]]; then
+        found="yes"
+    fi
+done
+
+if [[ $needed_item == "idk" ]]; then
+    if [[ $found == "yes" ]]; then
+        exit 1
+    else
+        exit 0
+    fi
+fi
+
+if [[ $MODE == "--release" ]] || [[ $MODE == "--profiling" ]]; then
+    dir="target/wasm32-unknown-unknown/release/examples/${needed_item}.wasm"
+else
+    dir="target/wasm32-unknown-unknown/debug/examples/${needed_item}.wasm"
+fi
+
+cp $dir web/runner.wasm
+wasm-bindgen --out-dir web --out-name runner.js --target web web/runner.wasm
+'''
+
+# [tasks.example1]
+# args = ["${@}"]
+# script_runner = "python"
+# script_extension = "py"
+# script = '''
+# import sys
+# import os
+# args = sys.argv
+# if len(args) == 1: exit(0)
+# args = args[1:]
+# if "--example" in args:
+#     args.append(None)
+#     example = args[args.index("--example") + 1]
+#     if example is None:
+#         exit(1)
+#     os.environ["MAKE_EXAMPLE"] = example
+#     print(os.environ["MAKE_EXAMPLE"])
+# '''
