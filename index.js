@@ -27,4 +27,4 @@ async function load(wasmPath) {
     await init(wasmBytes);
 }
 
-load('/runner.wasm');
+load('./runner.wasm');
