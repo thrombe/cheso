@@ -1,4 +1,4 @@
-mod run;
+pub mod run;
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
