@@ -1,7 +1,7 @@
 # cheso
 
 - rsync git cargo
-- cargo install wasm-pack wasm-bindgen-cli cargo-make
+- cargo install wasm-bindgen-cli cargo-make wasm-opt
 - cargo make web-run
 - cargo make web-push
 - cargo run

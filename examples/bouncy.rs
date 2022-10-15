@@ -12,7 +12,7 @@ use bevy::{
     DefaultPlugins,
 };
 use bevy_rapier2d::prelude::{
-    Ccd, CoefficientCombineRule, Collider, RapierPhysicsPlugin, Restitution, RigidBody,
+    CoefficientCombineRule, Collider, RapierPhysicsPlugin, Restitution, RigidBody,
 };
 
 
@@ -44,8 +44,8 @@ fn spawn_stuff(mut c: Commands, asset_server: Res<AssetServer>) {
         }))
         .insert(RigidBody::Fixed)
         .insert(Restitution {
-            coefficient: 1.0,
-            combine_rule: CoefficientCombineRule::Max,
+            coefficient: 0.0,
+            combine_rule: CoefficientCombineRule::Min,
         })
         .insert(Collider::polyline(
             vec![
@@ -84,21 +84,22 @@ fn wojak_spawner(
 ) {
     let scale = 2.0;
     if mouse.pressed(MouseButton::Left) {
-        let cursor = Cursor::from(windows.get_primary().unwrap());
-        c.spawn_bundle(SpriteBundle {
-            texture: tex.0.clone(),
-            transform: Transform {
-                translation: Vec3::new(cursor.x, cursor.y, 0.0), // TODO: +=rng
-                scale: Vec3::splat(scale / PIX_PER_M * 20.0),    // spirte is 20 pix in size
+        if let Ok(cursor) = Cursor::try_from(windows.get_primary().unwrap()) {
+            c.spawn_bundle(SpriteBundle {
+                texture: tex.0.clone(),
+                transform: Transform {
+                    translation: Vec3::new(cursor.x, cursor.y, 0.0), // TODO: +=rng
+                    scale: Vec3::splat(scale / PIX_PER_M * 20.0),    // spirte is 20 pix in size
+                    ..Default::default()
+                },
                 ..Default::default()
-            },
-            ..Default::default()
-        })
-        .insert(RigidBody::Dynamic)
-        // .insert(LockedAxes::ROTATION_LOCKED)
-        .insert(Ccd::enabled())
-        .insert(Restitution::coefficient(0.9))
-        .insert(Collider::ball(PIX_PER_M / 2.0)); // ? eh, should *= scale too. but no ig?
+            })
+            .insert(RigidBody::Dynamic)
+            // .insert(LockedAxes::ROTATION_LOCKED)
+            // .insert(Ccd::enabled())
+            .insert(Restitution::coefficient(0.9))
+            .insert(Collider::ball(PIX_PER_M / 2.0)); // ? eh, should *= scale too. but no ig?
+        }
     }
 }
 
@@ -133,8 +134,7 @@ fn update_edge_colliders(
 // TODO: also needs velocity: CursorMoved
 fn update_cursor(mut c: Commands, cursor: ResMut<CursorId>, windows: ResMut<Windows>) {
     let win = windows.get_primary().unwrap();
-    if win.cursor_position().is_some() {
-        let cur = Cursor::from(win);
+    if let Ok(cur) = Cursor::try_from(win) {
         let id = cursor.0;
         c.add(move |w: &mut World| {
             w.entity_mut(id).get_mut::<Transform>().unwrap().translation =
@@ -143,12 +143,12 @@ fn update_cursor(mut c: Commands, cursor: ResMut<CursorId>, windows: ResMut<Wind
     }
 }
 
-fn dbg_cursor(windows: ResMut<Windows>, mouse: Res<Input<MouseButton>>) {
-    if mouse.any_pressed([MouseButton::Right]) {
-        let c = Cursor::from(windows.get_primary().unwrap());
-        dbg!(c);
-    }
-}
+// fn dbg_cursor(windows: ResMut<Windows>, mouse: Res<Input<MouseButton>>) {
+//     if mouse.any_pressed([MouseButton::Right]) {
+//         let c = Cursor::from(windows.get_primary().unwrap());
+//         dbg!(c);
+//     }
+// }
 
 pub fn run() -> Result<()> {
     let mut app = App::new();
@@ -166,7 +166,7 @@ pub fn run() -> Result<()> {
     // })
     .add_startup_system(spawn_stuff)
     .add_system(update_cursor)
-    .add_system(dbg_cursor)
+    // .add_system(dbg_cursor)
     .add_system(update_edge_colliders)
     .add_system_set(
         SystemSet::new()
@@ -179,9 +179,14 @@ pub fn run() -> Result<()> {
 
 #[derive(Debug, Default, DerefMut, Deref)]
 pub struct Cursor(Vec2);
-impl From<&Window> for Cursor {
-    fn from(w: &Window) -> Self {
-        Self(w.cursor_position().unwrap() - Vec2::new(w.width() / 2.0, w.height() / 2.0))
+impl TryFrom<&Window> for Cursor {
+    type Error = ();
+    fn try_from(w: &Window) -> std::result::Result<Self, ()> {
+        if let Some(c) = w.cursor_position() {
+            Ok(Self(c - Vec2::new(w.width() / 2.0, w.height() / 2.0)))
+        } else {
+            Err(())
+        }
     }
 }
 

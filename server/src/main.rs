@@ -15,7 +15,7 @@ impl<T: Handler> Handler for Mitm<T> {
 }
 
 fn main() {
-    let addr = "localhost:3000";
+    let addr = "192.168.1.6:1337";
     println!("http://{addr}");
 
     let args = env::args().collect::<Vec<_>>();

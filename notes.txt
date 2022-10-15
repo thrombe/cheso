@@ -13,6 +13,22 @@ https://webrtcforthecurious.com/
 
 
 
+plan:
+  . remove the need of wasm-pack. just use wasm-bindgen and cargo
+  . does wasm-opt do anything after cargo --release ?. binary file size seems the same (check again)
+  . the wasm examples in bevy repo seem awefully simple (index.html/index.js part)
+    . yeet the complex index.js if possible
+
+wasm + native + p2p + webrtc:
+  . as of now, no solution provides a easy to use complete rust implimentation
+  . there's https://github.com/johanhelsing/matchbox which provides painless webrtc on wasm. even has a working bevy example
+    . https://johanhelsing.studio/posts/introducing-matchbox
+    . see the makefile to run demo: https://github.com/johanhelsing/matchbox/tree/main/matchbox_demo
+      . cargo run --bin matchbox_server
+      . cargo make serve --release
+    . firefox breaks it: https://github.com/johanhelsing/matchbox/issues/36
+    . native not yet supported: https://github.com/johanhelsing/matchbox/pull/16
+
 webrtc
   . https://webrtcforthecurious.com/docs/01-what-why-and-how/
   . https://github.com/webrtc-rs/webrtc
@@ -29,26 +45,43 @@ libp2p
   . p2p app local network -> https://blog.logrocket.com/libp2p-tutorial-build-a-peer-to-peer-app-in-rust/
   . https://docs.libp2p.io/
 
+rollback networking bevy something something:
+  . https://github.com/johanhelsing/matchbox
+  . https://github.com/gschup/ggrs
+  . https://github.com/HouraiTeahouse/backroll-rs
+  . https://github.com/gschup/bevy_ggrs
+
+something netwroking:
+  . https://crates.io/crates/async-compat
+
+useful bevy plugins:
+  . https://crates.io/crates/bevy_interact_2d
+
 bevy/wasm examples:
-  . https://rustwasm.github.io/wasm-bindgen/examples/raytrace.html
-  . https://github.com/bevyengine/bevy/tree/latest/examples#examples
   . https://bevyengine.org/examples/
+  . https://github.com/bevyengine/bevy/tree/latest/examples
+  
+  . https://rustwasm.github.io/wasm-bindgen/examples/raytrace.html
   . https://dev.to/sbelzile/making-games-in-rust-part-13-monster-ai-2dfn
 
 task runners:
+  . https://github.com/sagiegurari/cargo-make
+  
   . https://github.com/matklad/cargo-xtask
   . https://github.com/matklad/xshell
   . https://github.com/casey/just
-  . https://github.com/sagiegurari/cargo-make
   . https://github.com/fornwall/rust-script
 
 other resources:
+  . https://bevyengine.org/assets/
+  . https://rapier.rs/docs/user_guides/bevy_plugin/getting_started_bevy
+  . https://bevy-cheatbook.github.io/
+  . https://github.com/dimforge/bevy_rapier/tree/master/bevy_rapier2d/examples
+
   . https://bevyengine.org/learn/book/getting-started/
   . https://bevyengine.org/learn/book/next-steps/
-  . https://github.com/gschup/ggrs
-  . https://rapier.rs/docs/user_guides/bevy_plugin/getting_started_bevy
 
 awesome things in bevy:
-  . [shadertoy wgsl bevy](https://github.com/eliotbo/bevy_shadertoy_wgsl)
   . [p2p game](https://johanhelsing.studio/posts/extreme-bevy)
+  . [shadertoy wgsl bevy](https://github.com/eliotbo/bevy_shadertoy_wgsl)
   . [real time path tracing bevy](https://github.com/cryscan/bevy-hikari)
