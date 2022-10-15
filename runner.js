@@ -1718,48 +1718,48 @@ function getImports() {
         const ret = wasm.memory;
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper4310 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 2582, __wbg_adapter_32);
+    imports.wbg.__wbindgen_closure_wrapper4330 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 2596, __wbg_adapter_32);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper4312 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 2582, __wbg_adapter_35);
+    imports.wbg.__wbindgen_closure_wrapper4332 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 2596, __wbg_adapter_35);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper4314 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 2582, __wbg_adapter_32);
+    imports.wbg.__wbindgen_closure_wrapper4334 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 2596, __wbg_adapter_32);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper4316 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 2582, __wbg_adapter_32);
+    imports.wbg.__wbindgen_closure_wrapper4336 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 2596, __wbg_adapter_32);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper4318 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 2582, __wbg_adapter_32);
+    imports.wbg.__wbindgen_closure_wrapper4338 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 2596, __wbg_adapter_32);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper4320 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 2582, __wbg_adapter_32);
+    imports.wbg.__wbindgen_closure_wrapper4340 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 2596, __wbg_adapter_32);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper4322 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 2582, __wbg_adapter_32);
+    imports.wbg.__wbindgen_closure_wrapper4342 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 2596, __wbg_adapter_32);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper4324 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 2582, __wbg_adapter_32);
+    imports.wbg.__wbindgen_closure_wrapper4344 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 2596, __wbg_adapter_32);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper4326 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 2582, __wbg_adapter_32);
+    imports.wbg.__wbindgen_closure_wrapper4346 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 2596, __wbg_adapter_32);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper16360 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 9454, __wbg_adapter_52);
+    imports.wbg.__wbindgen_closure_wrapper16380 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 9468, __wbg_adapter_52);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper30560 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 16818, __wbg_adapter_55);
+    imports.wbg.__wbindgen_closure_wrapper30583 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 16833, __wbg_adapter_55);
         return addHeapObject(ret);
     };
 
@@ -1799,7 +1799,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('runner.js_bg.wasm', import.meta.url);
+        input = new URL('runner_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
