@@ -5,39 +5,35 @@ REPO_NAME = "cheso"
 GIT_USER = "thrombe"
 GIT_PAGES_BRANCH = "web"
 
+# https://github.com/sagiegurari/cargo-make
 
-
-[tasks.web-prep]
-dependencies = [ "web-build" ]
+[tasks.run]
 script_runner = "@shell"
 script = '''
-mkdir -p web/assets
-
-if [[ ! -d web ]]; then
-    cd web
-    git clone https://github.com/${GIT_USER}/${REPO_NAME}
-    git checkout ${GIT_PAGES_BRANCH}
-    cd ..
-else
-    cd web
-    if [[ "$(git rev-parse --abbrev-ref HEAD)" != "${GIT_PAGES_BRANCH}" ]]; then
-        exit 51
-    fi
-    cd ..
-fi
-
-cp web_src/index.html web/.
-cp web_src/index.js web/.
-cp target/pkg/${PROJECT_NAME}_bg.wasm web/runner.wasm
-cp target/pkg/${PROJECT_NAME}.js web/runner.js
-mkdir -p assets
-rsync -av --progress "./assets/" ./web/assets/. --delete
+cargo run ${@}
 '''
 
+[tasks.web-run]
+run_task = [ { name = [ "web-build", "web-wasm-bindgen", "web-prep", "server-run" ] } ]
+
+[tasks.web-run-opt]
+run_task = [ { name = [ "web-build", "web-wasm-bindgen", "web-opt", "web-prep", "server-run" ] } ]
 
 [tasks.web-push]
-env = { MODE = "--release" }
-run_task = [{ name = ["web-prep", "example", "web-opt", "push"] } ]
+run_task = [ { name = [ "web-build", "web-wasm-bindgen", "web-opt", "web-prep", "push" ] } ]
+
+
+[tasks.build]
+script_runner = "@shell"
+script = '''
+cargo build ${@}
+'''
+
+[tasks.web-build]
+script_runner = "@shell"
+script = '''
+cargo build --target wasm32-unknown-unknown ${@}
+'''
 
 [tasks.push]
 script_runner = "@shell"
@@ -55,30 +51,79 @@ git commit -m "update wasm"
 git push
 '''
 
-
-[tasks.web-build]
+[tasks.web-opt]
 script_runner = "@shell"
 script = '''
-wasm-pack build --target web --out-dir target/pkg --mode no-install --no-typescript ${MODE} ${@}
+dir="web/runner_bg.wasm"
+
+echo "Optimizing wasm binary with wasm-opt ..."
+
+# https://bevy-cheatbook.github.io/platforms/wasm/size-opt.html#use-the-wasm-opt-tool
+wasm-opt -O -ol 100 -s 100 $dir -o "${dir}.tmp"
+mv "${dir}.tmp" $dir
 '''
 
-
-[tasks.run]
+[tasks.web-wasm-bindgen]
 script_runner = "@shell"
 script = '''
-cargo run --release ${@}
+found="no"
+needed_item="idk"
+for item in ${@}
+do
+    # echo $item
+    if [[ $found == "examples" ]]; then
+        needed_item=$item
+        break
+    elif [[ $item == "--example" ]]; then
+        found="examples"
+    fi
+done
+
+if [[ $needed_item == "idk" ]]; then
+    if [[ $found == "examples" ]]; then
+        exit 51
+    else
+        found="."
+    fi
+fi
+
+release="debug"
+for item in ${@}
+do
+    if [[ $item == "--release" ]]; then
+        release="release"
+        break
+    fi
+done
+
+dir="target/wasm32-unknown-unknown/${release}/${found}/${needed_item}.wasm"
+
+wasm-bindgen --out-dir web --out-name runner --target web --no-typescript $dir
 '''
 
+[tasks.web-prep]
+script_runner = "@shell"
+script = '''
+if [[ ! -d web ]]; then
+    mkdir web
+    cd web
+    git clone https://github.com/${GIT_USER}/${REPO_NAME}
+    git checkout ${GIT_PAGES_BRANCH}
+    cd ..
+else
+    cd web
+    if [[ "$(git rev-parse --abbrev-ref HEAD)" != "${GIT_PAGES_BRANCH}" ]]; then
+        exit 54
+    fi
+    cd ..
+fi
 
-[tasks.web-run]
-env = { MODE = "--profiling" }
-run_task = [ { name = [ "web-prep", "example", "server-run" ] } ]
-
-
-[tasks.web-run-release]
-env = { MODE = "--release" }
-run_task = [ { name = [ "web-prep", "example", "web-opt", "server-run" ] } ]
-
+cp web_src/index.html web/.
+cp web_src/index.js web/.
+mkdir -p assets
+mkdir -p web/assets
+rsync -av --progress "./assets/" ./web/assets/. --delete
+'''
 
 [tasks.server-run]
 script_runner = "@shell"
@@ -86,70 +131,3 @@ script = '''
 cd server
 cargo run --release -- ../web
 '''
-
-[tasks.web-opt]
-script_runner = "@shell"
-script = '''
-dir="web/runner.wasm"
-opt="$(fd -t f wasm-opt ~/.cache/.wasm-pack | head -n 1)"
-if [[ $opt == *"/wasm-opt" ]]; then
-    echo "Optimizing wasm binary with wasm-opt ..."
-    # echo "${opt} -O ${dir} -o ${dir}.tmp"
-    $opt -O $dir -o "${dir}.tmp"
-    cp "${dir}.tmp" $dir
-fi
-
-'''
-
-[tasks.example]
-script_runner = "@shell"
-script = '''
-found="no"
-needed_item="idk"
-for item in ${@}
-do
-    echo $item
-    if [[ $found == "yes" ]]; then
-        needed_item=$item
-        break
-    elif [[ $item == "--example" ]]; then
-        found="yes"
-    fi
-done
-
-if [[ $needed_item == "idk" ]]; then
-    if [[ $found == "yes" ]]; then
-        exit 1
-    else
-        exit 0
-    fi
-fi
-
-if [[ $MODE == "--release" ]] || [[ $MODE == "--profiling" ]]; then
-    dir="target/wasm32-unknown-unknown/release/examples/${needed_item}.wasm"
-else
-    dir="target/wasm32-unknown-unknown/debug/examples/${needed_item}.wasm"
-fi
-
-cp $dir web/runner.wasm
-wasm-bindgen --out-dir web --out-name runner.js --target web web/runner.wasm
-'''
-
-# [tasks.example1]
-# args = ["${@}"]
-# script_runner = "python"
-# script_extension = "py"
-# script = '''
-# import sys
-# import os
-# args = sys.argv
-# if len(args) == 1: exit(0)
-# args = args[1:]
-# if "--example" in args:
-#     args.append(None)
-#     example = args[args.index("--example") + 1]
-#     if example is None:
-#         exit(1)
-#     os.environ["MAKE_EXAMPLE"] = example
-#     print(os.environ["MAKE_EXAMPLE"])
-# '''
